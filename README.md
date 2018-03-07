@@ -2,21 +2,18 @@
 
 A plugin that provides the essential components you need to power your web app with WordPress.
 
-* Front-end login, sign-up, password reset, and password change forms.
-* A delete account button for the front-end.
-* Separate navigation menus for logged-in and logged-out users.
-* User access settings, so you can selectively hide content from logged-out (or logged-in) users.
-* Security settings let you set password requirements, hide the admin bar, and block backend access.
-* The web app settings panel lets you easily configure error messages, button text, and more.
+- Front-end forms:
+	- Login
+	- Sign-up
+	- Password reset
+	- Email change
+	- Password change
+	- Delete account
+- User access settings, so you can selectively hide content from logged-out or logged-in users.
+- Security settings let you set password requirements, hide the admin bar, and force password resets.
+- The web app settings panel lets you easily configure error messages, button text, and more.
 
-[Download Web App Starter Kit 3](https://github.com/cferdinandi/web-app-starter-kit/archive/master.zip)
-
-**In This Documentation**
-
-1. [Getting Started](#getting-started)
-2. [How to Contribute](#how-to-contribute)
-3. [License](#license)
-4. [Changelog](#changelog)
+[Download WordPress for Web Apps](https://github.com/cferdinandi/wordpress-for-web-apps/archive/master.zip)
 
 
 
@@ -24,58 +21,116 @@ A plugin that provides the essential components you need to power your web app w
 
 Getting started with WordPress for Web Apps is as simple as installing a plugin:
 
-1. Upload the `web-app-starter-kit` folder to the `/wp-content/plugins/` directory.
+1. Upload the `wordpress-for-web-apps` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the Plugins menu in WordPress.
 
-And that's it, you're done. Nice work! You can access documentations and adjust settings under WP Web Apps in the Admin dashboard.
+To make sure you always get the latest updates, it’s recommended that you also install the [GitHub Updater plugin](https://github.com/afragen/github-updater).
+
+
+
+## Using WordPress for Web Apps
+
+Configure all of your settings under `Settings` > `Web Apps` in the WordPress Dashboard.
+
+### Shortcodes
+
+- `[wpwa_login]` - Login form
+- `[wpwa_signup]` - Sign up form
+- `[wpwa_change_email]` - Change email form
+- `[wpwa_change_password]` - Change password form
+- `[wpwa_forgot_password]` - Forgot password/password reset form
+- `[wpwa_delete_account]` - Delete account form
+- `[wpwa_logout]` - Logout URL (can be included as a `wp_nav_menu()` URL)
+- `[wpwa_username]` - The current user's username (can be included as the text in a `wp_nav_menu()` link)
+- `[wpwa_referrer]` - Adds `referrer={{current page URL}}`, handy for login/signup redirects (can be included in a `wp_nav_menu()` URL)
+
+### User Access
+
+All pages will now include a metabox labeled *User Access*. Select `Everyone`, `Only Logged In Users`, or `Only Logged Out Users` as desired and publish or update your page.
+
+### Action Hooks
+
+#### wpwebapp_after_login
+
+Runs after a user has logged in. Passes in the user's `$username` as an argument.
+
+```php
+do_action( 'wpwebapp_after_login', $username );
+```
+
+#### wpwebapp_after_signup
+
+Runs after a user has signed up. Passes in the new user's `$username` and `$email` as arguments.
+
+```php
+do_action( 'wpwebapp_after_signup', $username, $email );
+```
+
+#### wpwebapp_after_email_change
+
+Runs after a user has changed their email address. Passes in the user's `$user_id` and `$old_email` as arguments.
+
+```php
+do_action( 'wpwebapp_after_email_change', $user_id, $old_email );
+```
+
+#### wpwebapp_after_password_change
+
+Runs after a user's password has been changed. Passes in the user's `$user_id` as an argument.
+
+```php
+do_action( 'wpwebapp_after_password_change', $user_id );
+```
+
+#### wpwebapp_after_password_forgot_email_sent
+
+Runs after a password reset email is sent to a user. Passes in the user's `$user_id` as an argument.
+
+```php
+do_action( 'wpwebapp_after_password_forgot_email_sent', $user_id );
+```
+
+#### wpwebapp_after_password_reset
+
+Runs after a user's password has been reset. Passes in the user's `$user_id` as an argument.
+
+```php
+do_action( 'wpwebapp_after_password_reset', $user_id );
+```
+
+#### wpwebapp_after_delete_user
+
+Runs after a user deletes their account. Passes in the former user's `$username` and `$email` as arguments.
+
+```php
+do_action( 'wpwebapp_after_delete_user',  $username, $email );
+```
+
+### Redirecting after login or signup
+
+To redirect a user back to their current page after login or sign up, add the `referrer={{current URL}}` query string to the login or sign up page URL, where `{{current URL}}` is the URL of the page the user is currently on. You can also use the `[wpwa_referrer]` shortcode to handle this dynamically.
+
+
+
+## CSS Hooks
+
+Every form and input includes a unique `id` you can hook into for styling. Additionally, form element categories also include shared classes you can use to easily style like elements in a consistent way.
+
+- `.wpwebapp-form-label` - Form labels
+- `.wpwebapp-form-input` - Text inputs
+- `.wpwebaspp-form-password` - Password inputs
+- `.wpwebapp-form-button` - Form buttons and input[type="submit"]
+- `.wpwebapp-form-label-checkbox` - Labels for checkboxes
+- `.wpwebapp-form-checkbox` - Checkboxes
 
 
 
 ## How to Contribute
 
-In lieu of a formal style guide, take care to maintain the existing coding style. Don't forget to update the version number, the changelog (in the `readme.md` file), and when applicable, the documentation.
+To contribute to this project, please consult the [Contribution Guidelines](CONTRIBUTING.md).
 
 
 
 ## License
 
-WordPress for Web Apps is licensed under the [MIT License](http://gomakethings.com/mit/).
-
-
-
-## Changelog
-
-* v3.8 - April 17, 2014
-	* Add User Profile form options.
-	* Updated documentation.
-* v3.7 - April 6, 2014
-	* Restructured plugin backend for more user control.
-* v3.6 - April 5, 2014
-	* Added gravatar shortcode.
-* v3.5 - April 5, 2014
-	* Split forms and options across multiple files for more modular code structure.
-* v3.4 - November 10, 2013
-	* [Added a delete account button for the front-end](https://github.com/cferdinandi/web-app-starter-kit/issues/7)
-* v3.3 - October 31, 2013
-	* [Added a link to settings from plugin menu](https://github.com/cferdinandi/web-app-starter-kit/issues/13)
-* v3.2 - October 18, 2013
-	* Fixed [incorrect i18n](https://github.com/cferdinandi/web-app-starter-kit/issues/12).
-	* Change `home_url()` to `site_url()`. [Fixed issue 5](https://github.com/cferdinandi/web-app-starter-kit/issues/5)
-* v3.1 - October 4, 2013
-	* Updated `wpwebapp_disable_admin_bar()` to allow user preferences for users who have access.
-* v3.0 - September 28, 2013
-	* Converted from a collection of theme functions to a plugin.
-	* Completely rebuilt forms for better consistency, security, and UX.
-	* Changed signup process: user creates their own password and can login immediately.
-	* Changed password reset process: user selects their new password (not WordPress).
-	* Added password requirement check to signup and password change and reset processes.
-	* Integration with `wp_nav_menu()` for separate logged-in and logged-out navigation with any theme.
-	* Added Web App Settings page for easier adjustment of alerts, security settings, form styling, and more.
-* v2.1 - June 7, 2013
-	* Switched to MIT license.
-* v2.1 - June 6, 2013
-	* Split functions into individual files for easier inclusion and exclusion.
-* v2.0 - May 17, 2013
-	* Completely rebuilt.
-* v1.0 - January 23, 2013
-	* Initial GitHub Release (previously self-hosted).
+The code is available under the [MIT License](LICENSE.md).
